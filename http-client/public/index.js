@@ -1,7 +1,14 @@
-// The server's origin. Hardcoded on purpose: this file is served to the browser as a
-// plain script, so it cannot require('../../constants') the way the Node processes do.
-// If you change the Apollo port in constants.js, change it here too.
-const SERVER_URL = 'http://localhost:9090/'
+// The server's origin, taken from /config.js, which http-client generates from the same
+// constants.js the Node processes read. This used to be a hardcoded
+// http://localhost:9090, which made the `production` block in constants.js a lie: set
+// APOLLO_URL and the two Node processes honoured it while the page still called localhost
+// on the visitor's own machine.
+//
+// A static script cannot require() the repo, so the server serving it does the bridging.
+// The fallback is only for the case where /config.js failed to load, so the error message
+// below can still name something.
+const SERVER_URL =
+  (window.__APP_CONFIG__ && window.__APP_CONFIG__.apolloUrl) || 'http://localhost:9090/'
 
 const QUERY = `
   query {

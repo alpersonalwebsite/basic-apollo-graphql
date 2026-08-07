@@ -1,6 +1,5 @@
 # Basic Apollo GraphQL: server and browser client
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/alpersonalwebsite/basic-apollo-graphql.svg)](https://greenkeeper.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
 An easy, basic and raw (no styles attached) example of **HOW to** stand up an
@@ -31,6 +30,13 @@ and nothing else.
 ```shell
 npm ci
 ```
+
+The `dev`, `start` and `install:*` scripts use POSIX shell syntax (`NODE_ENV=dev node ...`),
+which **does not work in Windows `cmd.exe`**: it treats `NODE_ENV=dev` as a command rather
+than an assignment. Use Git Bash, WSL or PowerShell with `$env:NODE_ENV`. `cross-env` is
+the usual dependency-based fix, and it is deliberately not here: this is a two-process demo
+whose README is a sequence of shell commands throughout, so the requirement is documented
+rather than papered over with a package.
 
 That is genuinely all of it now. The dependencies live in `server/package.json` and
 `http-client/package.json`, and a `postinstall` script installs both. It used to
@@ -105,10 +111,11 @@ says what it could not reach.
 
 ## Next step
 
-[apollo-graphql-full](https://github.com/alpersonalwebsite/apollo-graphql-full) is the
-same idea with a real schema: users, plus add and delete mutations.
-[basic-apollo-graphql-mongodb](https://github.com/alpersonalwebsite/basic-apollo-graphql-mongodb)
-backs that schema with MongoDB, and
 [basic-apollo-graphql-vue](https://github.com/alpersonalwebsite/basic-apollo-graphql-vue)
-replaces this hand-written `fetch` with `vue-apollo`, which is the clearest way to see
-what a client library adds.
+replaces this hand-written `fetch` with `vue-apollo`, which is the clearest way to see what
+a client library adds.
+
+Two more sit alongside it: **apollo-graphql-full** is the same idea with a real schema
+(users, plus add and delete mutations), and **basic-apollo-graphql-mongodb** backs that
+schema with MongoDB. Both are currently **private**, so they are named rather than linked;
+a link would 404 for anyone reading this repository.
