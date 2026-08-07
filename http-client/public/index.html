@@ -7,7 +7,13 @@
     <div id="root">
       I'm loading...!
     </div>
-    <!-- type="module" important to use import/export -->
+    <!--
+      No type="module" here, and the comment that used to claim it was important has
+      gone with it. index.js is a plain script: it cannot import from ../../constants
+      the way the Node processes do, because the browser has no access to the repo.
+      Adding type="module" without an actual import changes nothing except making the
+      script defer.
+    -->
     <script src="index.js"></script>
   </body>
 </html>

@@ -11,6 +11,9 @@
     "apollo server"
   ],
   "scripts": {
+    "postinstall": "run-s install:*",
+    "install:server": "npm --prefix server install",
+    "install:client": "npm --prefix http-client install",
     "dev:server": "NODE_ENV=dev node server/",
     "dev:client": "NODE_ENV=dev node http-client/",
     "dev": "run-p dev:*",

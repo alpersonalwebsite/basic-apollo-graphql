@@ -1,10 +1,23 @@
-const express = require('express');
-const { port } = require('../constants').dev.http
+const express = require('express')
 
-const app = express();
+const { port } = require('../constants').current.http
 
-app.use('/', express.static(__dirname + '/public'));
+const app = express()
 
-const listener = app.listen(process.env.PORT || port, () => {
-  console.log('HTTP Server running at', listener.address().address + listener.address().port, 'in', process.env.NODE_ENV)
-});
+app.use('/', express.static(__dirname + '/public'))
+
+const server = app.listen(process.env.PORT || port, () => {
+  // Was `listener.address().address + listener.address().port`, string-concatenating an
+  // address and a number with no separator, so it logged things like `::9091`. And on a
+  // default bind the address is `::`, which is not a URL anyone can click.
+  const { port: boundPort } = server.address()
+  console.log(
+    `HTTP server running at http://localhost:${boundPort}`,
+    'in', process.env.NODE_ENV || 'dev (NODE_ENV was not set)'
+  )
+})
+
+server.on('error', (error) => {
+  console.error('HTTP server failed to start:', error.message)
+  process.exit(1)
+})
