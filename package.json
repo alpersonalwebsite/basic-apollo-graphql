@@ -12,8 +12,8 @@
   ],
   "scripts": {
     "postinstall": "run-s install:*",
-    "install:server": "npm --prefix server install",
-    "install:client": "npm --prefix http-client install",
+    "install:server": "npm ci --prefix server",
+    "install:client": "npm ci --prefix http-client",
     "dev:server": "NODE_ENV=dev node server/",
     "dev:client": "NODE_ENV=dev node http-client/",
     "dev": "run-p dev:*",

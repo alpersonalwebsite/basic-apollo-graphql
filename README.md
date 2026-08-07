@@ -29,7 +29,7 @@ and nothing else.
 ## Installation
 
 ```shell
-npm install
+npm ci
 ```
 
 That is genuinely all of it now. The dependencies live in `server/package.json` and
@@ -42,8 +42,18 @@ Error: Cannot find module 'apollo-server'
 
 npm workspaces would be the modern way to express this; they arrived in npm 7 and this
 project is pinned to the 2019 era, so a `postinstall` is the period-appropriate shape.
-The lockfiles are deliberately kept at `lockfileVersion` 1 for the same reason: npm 6
-cannot read version 3 at all.
+
+`npm ci` rather than `npm install`, and the `postinstall` uses `npm ci` in the two
+subdirectories for the same reason: all three lockfiles are deliberately at
+`lockfileVersion` **1**, because npm 6 (the npm that ships with the Node this project
+targets) cannot read version 3 at all. It fails with
+`Cannot read properties of undefined`. `npm install` **upgrades** a v1 lockfile in place,
+so using it in the postinstall silently rewrote the two subdirectory lockfiles to v3 on
+any modern machine, which is how that regression got shipped in the first place.
+
+If you run `npm install` at the root anyway, npm will upgrade the root lockfile: that is
+standard npm behaviour for any v1 lockfile and not something this repo can prevent. Do
+not commit that change.
 
 ## Running
 
