@@ -7,6 +7,7 @@
 # env files. The .local variants were listed individually and `.env` alone does not
 # cover .env.development / .env.production / .env.test either.
 .env*
+*.env
 
 # secrets and local databases
 secrets/
@@ -21,3 +22,4 @@ credentials*
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+__pycache__/
