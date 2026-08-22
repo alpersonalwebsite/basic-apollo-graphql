@@ -1,6 +1,7 @@
 const express = require('express')
 
 const config = require('../constants').current
+const { readPort } = require('../constants')
 
 const app = express()
 
@@ -27,7 +28,9 @@ app.get('/config.js', (_request, response) => {
 
 app.use('/', express.static(__dirname + '/public'))
 
-const server = app.listen(process.env.PORT || config.http.port, () => {
+// A NUMBER, not the raw string. This is the POSITIONAL listen() form, which treats a string as
+// a unix socket path, so PORT=abc used to start a server nothing could reach: see constants.js.
+const server = app.listen(readPort('PORT', process.env.PORT, config.http.port), () => {
   // Was `listener.address().address + listener.address().port`, concatenating an address
   // and a number with no separator, so it printed things like `::9091`. On a default bind
   // the address is `::`, which is not a URL anyone can click.
