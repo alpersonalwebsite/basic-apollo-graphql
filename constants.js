@@ -87,4 +87,7 @@ const environments = { dev, production }
 // something people clone to read.
 const current = environments[process.env.NODE_ENV] || dev
 
-module.exports = { ...environments, current, readPort }
+// `readPort` is deliberately NOT exported. Both entry points used to import it to validate their own
+// PORT read; now the ports are resolved once here, so exporting it would be an unused hook inviting a
+// second, unvalidated place to read a port from.
+module.exports = { ...environments, current }

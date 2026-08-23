@@ -11,6 +11,7 @@
     "apollo server"
   ],
   "scripts": {
+    "test": "node test/ports.js",
     "postinstall": "run-s install:*",
     "install:server": "npm ci --prefix server",
     "install:client": "npm ci --prefix http-client",
