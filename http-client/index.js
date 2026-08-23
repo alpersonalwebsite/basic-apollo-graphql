@@ -1,7 +1,6 @@
 const express = require('express')
 
 const config = require('../constants').current
-const { readPort } = require('../constants')
 
 const app = express()
 
@@ -28,9 +27,10 @@ app.get('/config.js', (_request, response) => {
 
 app.use('/', express.static(__dirname + '/public'))
 
-// A NUMBER, not the raw string. This is the POSITIONAL listen() form, which treats a string as
-// a unix socket path, so PORT=abc used to start a server nothing could reach: see constants.js.
-const server = app.listen(readPort('PORT', process.env.PORT, config.http.port), () => {
+// HTTP_PORT only, already validated in constants.js, and already a number: the positional
+// listen() form treats a string as a unix socket path. No `PORT` fallback, because it collided
+// with the Apollo server when both processes read it.
+const server = app.listen(config.http.port, () => {
   // Was `listener.address().address + listener.address().port`, concatenating an address
   // and a number with no separator, so it printed things like `::9091`. On a default bind
   // the address is `::`, which is not a URL anyone can click.

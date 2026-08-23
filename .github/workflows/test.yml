@@ -1,0 +1,32 @@
+# Runs the port-resolution assertions on every push and pull request.
+#
+# Port resolution in constants.js changed twice in two days (#6 added validation, #8 removed a shared
+# PORT and moved the reads out of the `production` block) with nothing guarding either change. The
+# second one would have caught the first's gap directly, which is the argument for this file.
+#
+# NO INSTALL STEP, and that is not an oversight: constants.js requires nothing, and the test uses only
+# assert, child_process and path. The apollo-server and express dependencies are needed to RUN the two
+# servers, not to resolve their configuration, so CI can check the thing that broke without installing
+# anything.
+
+name: test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm test
