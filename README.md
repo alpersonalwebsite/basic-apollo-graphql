@@ -22,8 +22,27 @@ They are separate ports, which means separate **origins**, which is why CORS is
 involved in a demo this small. `server/index.js` allows exactly the client's origin
 and nothing else.
 
-`constants.js` holds both ports for both environments, and everything in the
-`production` block can be overridden by an environment variable.
+`constants.js` holds both ports, and each process has exactly one variable that sets
+its own:
+
+| variable | sets | default |
+| --- | --- | --- |
+| `APOLLO_PORT` | the Apollo server in `server/` | 9090 |
+| `HTTP_PORT` | the static page server in `http-client/` | 9091 |
+| `APOLLO_URL`, `HTTP_URL` | hostnames, `production` only | `http://localhost` |
+
+**There is no shared `PORT`, deliberately.** Both entry points used to read it, so setting
+it pointed two servers at one port and `npm start`, which runs them together, killed
+whichever bound second with `EADDRINUSE`. Two processes cannot share a port, so they do
+not share a variable. If a platform hands you a single `PORT`, map it to the one you mean:
+
+```shell
+HTTP_PORT=$PORT npm run start:client
+```
+
+The port variables apply in every environment. They used to be read only inside the
+`production` block, so `APOLLO_PORT=9500 npm run dev:server` silently ignored the value
+and started on 9090.
 
 ## Installation
 

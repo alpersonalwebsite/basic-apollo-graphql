@@ -42,27 +42,41 @@ const readPort = (name, value, fallback) => {
   return port
 }
 
+// ONE VARIABLE PER PROCESS, and no shared `PORT`. This project starts two servers, so a single
+// generic PORT cannot mean both: `npm start` runs them together with run-p, and whichever bound
+// second used to die with EADDRINUSE the moment PORT was set. Two processes cannot share one port,
+// so they do not share one variable.
+//
+// Read here rather than inside `production`, so an override works in BOTH environments. It used to
+// apply only when NODE_ENV=production, which meant `APOLLO_PORT=9500 npm run dev:server` silently
+// ignored the value and started on 9090.
+const ports = {
+  apollo: readPort('APOLLO_PORT', process.env.APOLLO_PORT, 9090),
+  http: readPort('HTTP_PORT', process.env.HTTP_PORT, 9091)
+}
+
 const dev = {
   apollo: {
     url: 'http://localhost',
-    port: 9090
+    port: ports.apollo
   },
   http: {
     url: 'http://localhost',
-    port: 9091
+    port: ports.http
   }
 }
 
 // Same shape, so nothing downstream has to care which one it got. Deliberately no
-// hardcoded hostnames here: a real deployment supplies them.
+// hardcoded hostnames here: a real deployment supplies them. The ports are the same in both,
+// because which port to bind is not an environment-dependent question, only which host is.
 const production = {
   apollo: {
     url: process.env.APOLLO_URL || 'http://localhost',
-    port: readPort('APOLLO_PORT', process.env.APOLLO_PORT, dev.apollo.port)
+    port: ports.apollo
   },
   http: {
     url: process.env.HTTP_URL || 'http://localhost',
-    port: readPort('HTTP_PORT', process.env.HTTP_PORT, dev.http.port)
+    port: ports.http
   }
 }
 

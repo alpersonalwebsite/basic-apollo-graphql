@@ -3,7 +3,6 @@ const { gql, ApolloServer } = require('apollo-server')
 // `.current`, not `.dev`: see constants.js. This used to read the development port
 // even when the process had been started with NODE_ENV=production.
 const { port } = require('../constants').current.apollo
-const { readPort } = require('../constants')
 
 const typeDefs = gql`
   schema {
@@ -46,9 +45,9 @@ const server = new ApolloServer({
 });
 
 server.listen({
-  // Validated so a bad value names PORT instead of producing a bare RangeError. The
-  // options-object form was already safe from the socket-path hazard: see constants.js.
-  port: readPort('PORT', process.env.PORT, port)
+  // APOLLO_PORT only, validated in constants.js. There is deliberately no `PORT` fallback: this
+  // project runs two servers and a shared PORT collided between them.
+  port
 }).then(
   (serverInformation) =>
     console.log(
